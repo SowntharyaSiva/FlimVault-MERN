@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const User = require('./models/User'); // Your Mongoose User model
+const User = require('./models/User'); 
 require('dotenv').config();
 
 const app = express();
