@@ -2,14 +2,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const User = require('./models/User'); // Your Mongoose User model
+const User = require('./models/User'); 
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect('mongodb://localhost:27017/flimvault');
+//mongoose.connect('mongodb://localhost:27017/flimvault');
+
+mongoose.connect(process.env.MONGO_URI)
+.then(() => console.log('MongoDB connected'))
+.catch((err) => console.error('MongoDB connection error:', err));
 
 
 app.post('/register', async (req, res) => {
