@@ -6,6 +6,8 @@ import Banner from "./components/Banner";
 import Login from "./components/Login";
 import Register from "./components/Register";
 
+import.meta.env.VITE_API_BASE_URL
+
 import { BrowserRouter,Routes ,Route} from "react-router-dom";
 
 export default function App() {
@@ -19,7 +21,7 @@ export default function App() {
     localStorage.setItem('moviesApp', JSON.stringify(newWatchList));
 
     if (user) {
-      await fetch("http://localhost:5000/watchlist/add", {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/watchlist/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.userId, movie: movieObj })
@@ -34,7 +36,7 @@ export default function App() {
     localStorage.setItem('moviesApp', JSON.stringify(filteredWatchList));
 
     if (user) {
-      await fetch("http://localhost:5000/watchlist/delete", {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/watchlist/delete`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: user.userId, movieId: movieObj.id })
@@ -54,7 +56,7 @@ export default function App() {
     const storedUser = JSON.parse(storedUserJSON);
     setUser(storedUser);
 
-    fetch(`http://localhost:5000/watchlist/${storedUser.userId}`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/watchlist/${storedUser.userId}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
