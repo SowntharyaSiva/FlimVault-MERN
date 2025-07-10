@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import.meta.env.VITE_API_BASE_URL
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -10,25 +11,48 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
+  e.preventDefault();
+  setError("");
+  setSuccess("");
 
-    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/register`, {
+  try {
+    console.log("API_BASE is:", API_BASE);
+    console.log("API_BASE is:", import.meta.env.VITE_API_BASE_URL);
+
+    const res = await fetch(`${API_BASE}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
     });
 
-    const data = await res.json();
+    console.log("Raw response:", res);
 
-    if (res.ok) {
-      setSuccess("Registration successful! Redirecting to login...");
-      setTimeout(() => navigate("/"), 2000);
-    } else {
-      setError(data.message || "Registration failed");
+    const text = await res.text(); // Try reading raw text
+    console.log("Raw response text:", text);
+
+    if (!res.ok) {
+      // Try parsing JSON from raw text (if present)
+      let errData;
+      try {
+        errData = JSON.parse(text);
+      } catch (e) {
+        errData = { message: "Unknown error or empty response" };
+      }
+      throw new Error(errData.message);
     }
-  };
+
+    const data = JSON.parse(text); // Only parse after confirming it's not empty
+    console.log("Parsed response:", data);
+
+    setSuccess("Registration successful! Redirecting to login...");
+    setTimeout(() => navigate("/"), 2000);
+  } catch (err) {
+    console.error("Registration error:", err.message);
+    setError(err.message || "Something went wrong");
+  }
+};
+
+
 
   return (
     <div className="flex justify-center items-center h-screen bg-blue-100 text-gray-800">
