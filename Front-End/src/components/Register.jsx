@@ -17,7 +17,7 @@ export default function Register() {
 
   try {
     console.log("API_BASE is:", API_BASE);
-    console.log("API_BASE is:", import.meta.env.VITE_API_BASE_URL);
+
 
     const res = await fetch(`${API_BASE}/register`, {
       method: "POST",

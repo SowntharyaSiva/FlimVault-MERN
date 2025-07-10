@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 
 export default function Login({ setUser }) {
@@ -10,38 +11,56 @@ export default function Login({ setUser }) {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+  setError("");
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username, password })
-      });
+  try {
+    const response = await fetch(`${API_BASE}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username, password })
+    });
 
-      const data = await response.json();
+    const text = await response.text(); // first read raw text
+    console.log("Raw login response text:", text); // optional debugging
 
-      if (data.success && data.user) {
-        const userInfo = {
-          userId: data.user._id,
-          username: data.user.username
-        };
-
-        setUser(userInfo);
-        localStorage.setItem("user", JSON.stringify(userInfo));
-        localStorage.setItem("moviesApp", JSON.stringify(data.user.watchlist || []));
-        navigate("/home");
-
-      } else {
-        setError(data.message || "Login failed");
+    if (!response.ok) {
+      // Try to parse error message if any
+      let errorData;
+      try {
+        errorData = JSON.parse(text);
+      } catch (e) {
+        errorData = { message: "Login failed. Server returned no error message." };
       }
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong. Try again.");
+      setError(errorData.message || "Login failed");
+      return;
     }
-  };
+
+    // Parse the JSON if ok
+    const data = JSON.parse(text);
+
+    if (data.success && data.user) {
+      const userInfo = {
+        userId: data.user._id,
+        username: data.user.username
+      };
+
+      setUser(userInfo);
+      localStorage.setItem("user", JSON.stringify(userInfo));
+      localStorage.setItem("moviesApp", JSON.stringify(data.user.watchlist || []));
+      navigate("/home");
+    } else {
+      setError(data.message || "Login failed");
+    }
+
+  } catch (err) {
+    console.error("Login error:", err.message);
+    setError("Something went wrong. Try again.");
+  }
+};
+
 
   return (
     <div className="flex justify-center items-center h-screen bg-blue-100 text-gray-800">
