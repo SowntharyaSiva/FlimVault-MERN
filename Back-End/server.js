@@ -15,35 +15,55 @@ mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('MongoDB connected'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
-
 app.post('/register', async (req, res) => {
-  const { username, password } = req.body;
-  const existing = await User.findOne({ username });
-  if (existing) return res.status(409).json({ message: 'Username already exists' });
+  try {
+    const { username, password } = req.body;
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({ username, password: hashedPassword, watchlist: [] });
-  await user.save();
-  res.json({ message: 'Registration successful' });
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password required' });
+    }
+
+    const existing = await User.findOne({ username });
+    if (existing) return res.status(409).json({ message: 'Username already exists' });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ username, password: hashedPassword, watchlist: [] });
+    await user.save();
+
+    res.status(201).json({ message: 'Registration successful' });
+  } catch (error) {
+    console.error("Error in /register:", error.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
+
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
+  try {
+    const { username, password } = req.body;
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ message: 'Invalid credentials' });
-  }
-
-  res.json({
-    success: true,
-    message: 'Login successful',
-    user: {
-      _id: user._id,
-      username: user.username,
-      watchlist: user.watchlist
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password required' });
     }
-  });
+
+    const user = await User.findOne({ username });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Login successful',
+      user: {
+        _id: user._id,
+        username: user.username,
+        watchlist: user.watchlist
+      }
+    });
+  } catch (error) {
+    console.error("Error in /login:", error.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 
