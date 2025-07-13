@@ -18,7 +18,7 @@ export default function App() {
   let handleAddtoWatchList = async (movieObj) => {
     let newWatchList = [...watchlist, movieObj];
     setWatchList(newWatchList);
-    localStorage.setItem('moviesApp', JSON.stringify(newWatchList));
+    //localStorage.setItem('moviesApp', JSON.stringify(newWatchList));
 
     if (user) {
       await fetch(`${import.meta.env.VITE_API_BASE_URL}/watchlist/add`, {
@@ -33,7 +33,7 @@ export default function App() {
   let handleRemoveFromWatchList = async (movieObj) => {
     let filteredWatchList = watchlist.filter((movie) => movie.id !== movieObj.id);
     setWatchList(filteredWatchList);
-    localStorage.setItem('moviesApp', JSON.stringify(filteredWatchList));
+    //localStorage.setItem('moviesApp', JSON.stringify(filteredWatchList));
 
     if (user) {
       await fetch(`${import.meta.env.VITE_API_BASE_URL}/watchlist/delete`, {
@@ -61,7 +61,7 @@ export default function App() {
       .then((data) => {
         if (Array.isArray(data)) {
           setWatchList(data);
-          localStorage.setItem("moviesApp", JSON.stringify(data));
+          //localStorage.setItem("moviesApp", JSON.stringify(data));
         } else {
           console.warn("Watchlist is not an array:", data);
           setWatchList([]);

@@ -49,7 +49,7 @@ export default function Login({ setUser }) {
 
       setUser(userInfo);
       localStorage.setItem("user", JSON.stringify(userInfo));
-      localStorage.setItem("moviesApp", JSON.stringify(data.user.watchlist || []));
+      //localStorage.setItem("moviesApp", JSON.stringify(data.user.watchlist || []));
       navigate("/home");
     } else {
       setError(data.message || "Login failed");
