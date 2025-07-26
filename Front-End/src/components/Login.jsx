@@ -23,8 +23,8 @@ export default function Login({ setUser }) {
       body: JSON.stringify({ username, password })
     });
 
-    const text = await response.text(); // first read raw text
-    console.log("Raw login response text:", text); // optional debugging
+    const text = await response.text(); 
+    // console.log("Raw login response text:", text);
 
     if (!response.ok) {
       // Try to parse error message if any
@@ -48,8 +48,7 @@ export default function Login({ setUser }) {
       };
 
       setUser(userInfo);
-      //localStorage.setItem("user", JSON.stringify(userInfo));
-      //localStorage.setItem("moviesApp", JSON.stringify(data.user.watchlist || []));
+      localStorage.setItem("user", JSON.stringify(userInfo));
       navigate("/home");
     } else {
       setError(data.message || "Login failed");

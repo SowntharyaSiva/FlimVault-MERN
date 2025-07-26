@@ -12,13 +12,15 @@ import { BrowserRouter,Routes ,Route} from "react-router-dom";
 
 export default function App() {
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+  const storedUser = localStorage.getItem("user");
+  return storedUser ? JSON.parse(storedUser) : null;
+  });
   let [watchlist , setWatchList] = useState([]);
 
   let handleAddtoWatchList = async (movieObj) => {
     let newWatchList = [...watchlist, movieObj];
     setWatchList(newWatchList);
-    //localStorage.setItem('moviesApp', JSON.stringify(newWatchList));
 
     if (user) {
       await fetch(`${import.meta.env.VITE_API_BASE_URL}/watchlist/add`, {
@@ -33,7 +35,6 @@ export default function App() {
   let handleRemoveFromWatchList = async (movieObj) => {
     let filteredWatchList = watchlist.filter((movie) => movie.id !== movieObj.id);
     setWatchList(filteredWatchList);
-    //localStorage.setItem('moviesApp', JSON.stringify(filteredWatchList));
 
     if (user) {
       await fetch(`${import.meta.env.VITE_API_BASE_URL}/watchlist/delete`, {
@@ -88,7 +89,7 @@ export default function App() {
           <Route path="/" element={<Login setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/home" element={<> <Navbar user={user} setUser={setUser} setWatchList={setWatchList}/> <Banner/> <Movies watchlist={watchlist} handleAddtoWatchList={handleAddtoWatchList} handleRemoveFromWatchList={handleRemoveFromWatchList}/>  </>}></Route>
-          <Route path="/Watchlist" element={<><Navbar user={user}/> <Watchlist  watchlist={watchlist} setWatchList={setWatchList} handleRemoveFromWatchlist={handleRemoveFromWatchList} /> </>}></Route>
+          <Route path="/Watchlist" element={<><Navbar user={user} setUser={setUser} setWatchList={setWatchList}/> <Watchlist  watchlist={watchlist} setWatchList={setWatchList} handleRemoveFromWatchlist={handleRemoveFromWatchList} /> </>}></Route>
         
         </Routes>
       </BrowserRouter>
