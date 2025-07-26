@@ -45,18 +45,16 @@ export default function App() {
   };
 
   useEffect(() => {
-  const storedUserJSON = localStorage.getItem("user");
 
-  if (!storedUserJSON) {
+  if (!user) {
     setUser(null);
     return;
   }
 
   try {
-    const storedUser = JSON.parse(storedUserJSON);
-    setUser(storedUser);
+    
 
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/watchlist/${storedUser.userId}`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/watchlist/${user.userId}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -89,7 +87,7 @@ export default function App() {
         
           <Route path="/" element={<Login setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/home" element={<> <Navbar user={user} setWatchList={setWatchList}/> <Banner/> <Movies watchlist={watchlist} handleAddtoWatchList={handleAddtoWatchList} handleRemoveFromWatchList={handleRemoveFromWatchList}/>  </>}></Route>
+          <Route path="/home" element={<> <Navbar user={user} setUser={setUser} setWatchList={setWatchList}/> <Banner/> <Movies watchlist={watchlist} handleAddtoWatchList={handleAddtoWatchList} handleRemoveFromWatchList={handleRemoveFromWatchList}/>  </>}></Route>
           <Route path="/Watchlist" element={<><Navbar user={user}/> <Watchlist  watchlist={watchlist} setWatchList={setWatchList} handleRemoveFromWatchlist={handleRemoveFromWatchList} /> </>}></Route>
         
         </Routes>
