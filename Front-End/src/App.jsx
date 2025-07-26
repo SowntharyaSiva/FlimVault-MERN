@@ -89,7 +89,7 @@ export default function App() {
         
           <Route path="/" element={<Login setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/home" element={<> <Navbar user={user}/> <Banner/> <Movies watchlist={watchlist} handleAddtoWatchList={handleAddtoWatchList} handleRemoveFromWatchList={handleRemoveFromWatchList}/>  </>}></Route>
+          <Route path="/home" element={<> <Navbar user={user} setWatchList={setWatchList}/> <Banner/> <Movies watchlist={watchlist} handleAddtoWatchList={handleAddtoWatchList} handleRemoveFromWatchList={handleRemoveFromWatchList}/>  </>}></Route>
           <Route path="/Watchlist" element={<><Navbar user={user}/> <Watchlist  watchlist={watchlist} setWatchList={setWatchList} handleRemoveFromWatchlist={handleRemoveFromWatchList} /> </>}></Route>
         
         </Routes>

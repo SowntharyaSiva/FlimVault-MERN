@@ -6,7 +6,10 @@ const Navbar = ({ user }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    navigate("/");  // Just redirect to login page
+    localStorage.removeItem("user");
+    setUser(null);
+    setWatchList([]);
+    navigate("/"); 
   };
 
   return (
